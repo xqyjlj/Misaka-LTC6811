@@ -21,7 +21,7 @@
 
 #define LTC6811_CRC15_POLY 0x4599
 
-#define LTC6811_DeviceNUM 1
+#define LTC6811_DEVICE_NUM 1
 
 #define LTC6811_WRCFGA      0x0001           //写配置寄存器组命令
 #define LTC6811_WRCFGB      0x0024           //写配置寄存器组命令
@@ -229,7 +229,7 @@ typedef struct
 uint8_t misaka_ltc6811_transmit_receive(uint8_t* tx_data, uint8_t* rx_data, uint16_t size);
 void misaka_ltc6811_delay_ms(uint16_t ms);
 
-extern misaka_ltc6811_struct misaka_ltc6811_device_object[LTC6811_DeviceNUM];
+extern misaka_ltc6811_struct misaka_ltc6811_device_object[LTC6811_DEVICE_NUM];
 
 void misaka_ltc6811_init_pec15_table();
 uint8_t misaka_ltc6811_cmd_wakeidle(void);

@@ -50,11 +50,11 @@ static uint16_t pec_table[256] = {0x0000, 0xC599, 0xCEAB, 0x0B32, 0xD8CF, 0x1D56
                                   0xA76F, 0x62F6, 0x69C4, 0xAC5D, 0x7FA0, 0xBA39, 0xB10B, 0x7492,
                                   0x5368, 0x96F1, 0x9DC3, 0x585A, 0x8BA7, 0x4E3E, 0x450C, 0x8095
                                  };
-static uint8_t send_data[LTC6811_DeviceNUM * 8 + 4];                 //SPI发送数据寄存器
-static uint8_t receive_data[LTC6811_DeviceNUM * 8 + 4];                   //SPI接收数据寄存器
+static uint8_t send_data[LTC6811_DEVICE_NUM * 8 + 4];                 //SPI发送数据寄存器
+static uint8_t receive_data[LTC6811_DEVICE_NUM * 8 + 4];                   //SPI接收数据寄存器
 static uint16_t pec_data;
 
-misaka_ltc6811_struct misaka_ltc6811_device_object[LTC6811_DeviceNUM];                         //设备数据结构体
+misaka_ltc6811_struct misaka_ltc6811_device_object[LTC6811_DEVICE_NUM];                         //设备数据结构体
 
 /**
  * @brief
@@ -148,14 +148,14 @@ static uint8_t misaka_ltc6811_Read_cmd(uint16_t cmd)
     send_data[1] = _cmd.data[1];
     send_data[2] = _cmd.data[2];
     send_data[3] = _cmd.data[3];
-    for (i = 0; i < LTC6811_DeviceNUM; i++)
+    for (i = 0; i < LTC6811_DEVICE_NUM; i++)
     {
         for (j = 0; j < 8; j++)
         {
             send_data[i * 8 + j + 4] = 0xFF;
         }
     }
-    return misaka_ltc6811_transmit_receive(send_data, receive_data, LTC6811_DeviceNUM * 8 + 4);
+    return misaka_ltc6811_transmit_receive(send_data, receive_data, LTC6811_DEVICE_NUM * 8 + 4);
 }
 /**
  * @brief
@@ -171,7 +171,7 @@ static uint8_t misaka_ltc6811_Write_cmd(uint16_t cmd)
     send_data[1] = _cmd.data[1];
     send_data[2] = _cmd.data[2];
     send_data[3] = _cmd.data[3];
-    return misaka_ltc6811_transmit_receive(send_data, receive_data, LTC6811_DeviceNUM * 8 + 4);
+    return misaka_ltc6811_transmit_receive(send_data, receive_data, LTC6811_DEVICE_NUM * 8 + 4);
 }
 /**
  * @brief
@@ -180,14 +180,14 @@ static uint8_t misaka_ltc6811_Write_cmd(uint16_t cmd)
 uint8_t misaka_ltc6811_cmd_wakeidle(void)
 {
     uint8_t i;
-    for (i = 0; i < LTC6811_DeviceNUM; i++)
+    for (i = 0; i < LTC6811_DEVICE_NUM; i++)
     {
         send_data[i * 4 + 0] = 0xAA;
         send_data[i * 4 + 1] = 0xAA;
         send_data[i * 4 + 2] = 0xAA;
         send_data[i * 4 + 3] = 0xAA;
     }
-    return misaka_ltc6811_transmit_receive(send_data, receive_data, 4 * LTC6811_DeviceNUM);
+    return misaka_ltc6811_transmit_receive(send_data, receive_data, 4 * LTC6811_DEVICE_NUM);
 }
 /**
  * @brief
@@ -198,16 +198,16 @@ uint8_t misaka_ltc6811_cmd_wakeidle(void)
 static uint8_t misaka_ltc6811_Move_data(uint8_t P[], uint8_t DeviceNum)
 {
     uint8_t i[8];
-    i[0] = receive_data[4 + (LTC6811_DeviceNUM - 1 - DeviceNum) * 8];
-    i[1] = receive_data[5 + (LTC6811_DeviceNUM - 1 - DeviceNum) * 8];
-    i[2] = receive_data[6 + (LTC6811_DeviceNUM - 1 - DeviceNum) * 8];
-    i[3] = receive_data[7 + (LTC6811_DeviceNUM - 1 - DeviceNum) * 8];
-    i[4] = receive_data[8 + (LTC6811_DeviceNUM - 1 - DeviceNum) * 8];
-    i[5] = receive_data[9 + (LTC6811_DeviceNUM - 1 - DeviceNum) * 8];
+    i[0] = receive_data[4 + (LTC6811_DEVICE_NUM - 1 - DeviceNum) * 8];
+    i[1] = receive_data[5 + (LTC6811_DEVICE_NUM - 1 - DeviceNum) * 8];
+    i[2] = receive_data[6 + (LTC6811_DEVICE_NUM - 1 - DeviceNum) * 8];
+    i[3] = receive_data[7 + (LTC6811_DEVICE_NUM - 1 - DeviceNum) * 8];
+    i[4] = receive_data[8 + (LTC6811_DEVICE_NUM - 1 - DeviceNum) * 8];
+    i[5] = receive_data[9 + (LTC6811_DEVICE_NUM - 1 - DeviceNum) * 8];
     pec_data = misaka_ltc6811_PEC15(i, 6);
     i[6] = pec_data >> 8;
     i[7] = pec_data & 0x00FF;
-    if ((i[6] == receive_data[10 + (LTC6811_DeviceNUM - 1 - DeviceNum) * 8]) && (i[7] == receive_data[11 + (LTC6811_DeviceNUM - 1 - DeviceNum) * 8]))
+    if ((i[6] == receive_data[10 + (LTC6811_DEVICE_NUM - 1 - DeviceNum) * 8]) && (i[7] == receive_data[11 + (LTC6811_DEVICE_NUM - 1 - DeviceNum) * 8]))
     {
         P[0] = i[0];
         P[1] = i[1];
@@ -234,13 +234,13 @@ static uint8_t misaka_ltc6811_Move_data(uint8_t P[], uint8_t DeviceNum)
  */
 uint8_t misaka_ltc6811_cmd_wrcfga(void)
 {
-    for (uint8_t i = 0; i < LTC6811_DeviceNUM; i++)
+    for (uint8_t i = 0; i < LTC6811_DEVICE_NUM; i++)
     {
         pec_data = misaka_ltc6811_PEC15(misaka_ltc6811_device_object[i].cfgr, 6);
         misaka_ltc6811_device_object[i].cfgr[6] = pec_data >> 8;
         misaka_ltc6811_device_object[i].cfgr[7] = pec_data & 0x00FF;
     }
-    for (uint8_t i = 0; i < LTC6811_DeviceNUM; i++)
+    for (uint8_t i = 0; i < LTC6811_DEVICE_NUM; i++)
     {
         for (uint8_t j = 0; j < 8; j++)
         {
@@ -266,7 +266,7 @@ uint8_t misaka_ltc6811_cmd_rdcva(void)
 {
     uint8_t status;
     status = misaka_ltc6811_Read_cmd(LTC6811_RDCVA);
-    for (uint8_t i = 0; i < LTC6811_DeviceNUM; i++)
+    for (uint8_t i = 0; i < LTC6811_DEVICE_NUM; i++)
     {
         misaka_ltc6811_Move_data(misaka_ltc6811_device_object[i].cvar, i);
     }
@@ -280,7 +280,7 @@ uint8_t misaka_ltc6811_cmd_rdcvb(void)
 {
     uint8_t status;
     status = misaka_ltc6811_Read_cmd(LTC6811_RDCVB);
-    for (uint8_t i = 0; i < LTC6811_DeviceNUM; i++)
+    for (uint8_t i = 0; i < LTC6811_DEVICE_NUM; i++)
     {
         misaka_ltc6811_Move_data(misaka_ltc6811_device_object[i].cvbr, i);
     }
@@ -294,7 +294,7 @@ uint8_t misaka_ltc6811_cmd_rdcvc(void)
 {
     uint8_t status;
     status = misaka_ltc6811_Read_cmd(LTC6811_RDCVC);
-    for (uint8_t i = 0; i < LTC6811_DeviceNUM; i++)
+    for (uint8_t i = 0; i < LTC6811_DEVICE_NUM; i++)
     {
         misaka_ltc6811_Move_data(misaka_ltc6811_device_object[i].cvcr, i);
     }
@@ -308,7 +308,7 @@ uint8_t misaka_ltc6811_cmd_rdcvd(void)
 {
     uint8_t status;
     status = misaka_ltc6811_Read_cmd(LTC6811_RDCVD);
-    for (uint8_t i = 0; i < LTC6811_DeviceNUM; i++)
+    for (uint8_t i = 0; i < LTC6811_DEVICE_NUM; i++)
     {
         misaka_ltc6811_Move_data(misaka_ltc6811_device_object[i].cvdr, i);
     }
@@ -322,7 +322,7 @@ uint8_t misaka_ltc6811_cmd_rdauxa(void)
 {
     uint8_t status;
     status = misaka_ltc6811_Read_cmd(LTC6811_RDAUXA);
-    for (uint8_t i = 0; i < LTC6811_DeviceNUM; i++)
+    for (uint8_t i = 0; i < LTC6811_DEVICE_NUM; i++)
     {
         misaka_ltc6811_Move_data(misaka_ltc6811_device_object[i].avar, i);
     }
@@ -336,7 +336,7 @@ uint8_t misaka_ltc6811_cmd_rdauxb(void)
 {
     uint8_t status;
     status = misaka_ltc6811_Read_cmd(LTC6811_RDAUXB);
-    for (uint8_t i = 0; i < LTC6811_DeviceNUM; i++)
+    for (uint8_t i = 0; i < LTC6811_DEVICE_NUM; i++)
     {
         misaka_ltc6811_Move_data(misaka_ltc6811_device_object[i].avbr, i);
     }
@@ -350,7 +350,7 @@ uint8_t misaka_ltc6811_cmd_rdstata(void)
 {
     uint8_t status;
     status = misaka_ltc6811_Read_cmd(LTC6811_RDSTATA);
-    for (uint8_t i = 0; i < LTC6811_DeviceNUM; i++)
+    for (uint8_t i = 0; i < LTC6811_DEVICE_NUM; i++)
     {
         misaka_ltc6811_Move_data(misaka_ltc6811_device_object[i].star, i);
     }
@@ -364,7 +364,7 @@ uint8_t misaka_ltc6811_cmd_rdstatb(void)
 {
     uint8_t status;
     status = misaka_ltc6811_Read_cmd(LTC6811_RDSTATB);
-    for (uint8_t i = 0; i < LTC6811_DeviceNUM; i++)
+    for (uint8_t i = 0; i < LTC6811_DEVICE_NUM; i++)
     {
         misaka_ltc6811_Move_data(misaka_ltc6811_device_object[i].stbr, i);
     }

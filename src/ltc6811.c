@@ -33,7 +33,7 @@ uint8_t misaka_ltc6811_wrcfga(misaka_ltc6811_cfgr_struct* cfgr)
 {
     uint16_t vuv = (((cfgr->vuv * 10) / 16) - 1);
     uint16_t vov = ((cfgr->vov * 10) / 16);
-    for (uint8_t i = 0; i < LTC6811_DeviceNUM; i++)
+    for (uint8_t i = 0; i < LTC6811_DEVICE_NUM; i++)
     {
         misaka_ltc6811_device_object[i].cfgr[0] = cfgr->gpiox | cfgr->refon | cfgr->dten | cfgr->adcopt;
         misaka_ltc6811_device_object[i].cfgr[1] = 0x00FF & vuv;
@@ -362,7 +362,7 @@ uint8_t misaka_ltc6811_calculate_cell_voltage(void)
     status += misaka_ltc6811_rdcvb();
     status += misaka_ltc6811_rdcvc();
     status += misaka_ltc6811_rdcvd();
-    for (uint8_t i = 0; i < LTC6811_DeviceNUM; i++) //将电压缓存在电压辅助数组里
+    for (uint8_t i = 0; i < LTC6811_DEVICE_NUM; i++) //将电压缓存在电压辅助数组里
     {
         misaka_ltc6811_device_object[i].cell_volt[0] = (((uint16_t)misaka_ltc6811_device_object[i].cvar[1]) << 8) + misaka_ltc6811_device_object[i].cvar[0];
         misaka_ltc6811_device_object[i].cell_volt[1] = (((uint16_t)misaka_ltc6811_device_object[i].cvar[3]) << 8) + misaka_ltc6811_device_object[i].cvar[2];
@@ -403,7 +403,7 @@ uint8_t misaka_ltc6811_calculate_auxiliary_voltage(void)
     uint8_t status = 0;
     status += misaka_ltc6811_rdauxa();
     status += misaka_ltc6811_rdauxb();
-    for (uint8_t i = 0; i < LTC6811_DeviceNUM; i++)
+    for (uint8_t i = 0; i < LTC6811_DEVICE_NUM; i++)
     {
         misaka_ltc6811_device_object[i].gpio_volt[0] = (((uint16_t)misaka_ltc6811_device_object[i].avar[1]) << 8) + misaka_ltc6811_device_object[i].avar[0];
         misaka_ltc6811_device_object[i].gpio_volt[1] = (((uint16_t)misaka_ltc6811_device_object[i].avar[3]) << 8) + misaka_ltc6811_device_object[i].avar[2];
@@ -437,7 +437,7 @@ uint8_t misaka_ltc6811_calculate_status(void)
     uint8_t status = 0;
     status += misaka_ltc6811_rdstata();
     status += misaka_ltc6811_rdstatb();
-    for (uint8_t i = 0; i < LTC6811_DeviceNUM; i++)
+    for (uint8_t i = 0; i < LTC6811_DEVICE_NUM; i++)
     {
         misaka_ltc6811_device_object[i].soc_volt = (((uint16_t)misaka_ltc6811_device_object[i].star[1]) << 8) + misaka_ltc6811_device_object[i].star[0];
         misaka_ltc6811_device_object[i].total_volt = misaka_ltc6811_device_object[i].soc_volt * 20;
@@ -480,7 +480,7 @@ uint8_t misaka_ltc6811_cell_voltage_self_test(uint16_t md, uint8_t st, uint16_t 
     status += misaka_ltc6811_cvst(md, st);
     misaka_ltc6811_delay_ms(misaka_ltc6811_delay_unit);
     status += misaka_ltc6811_calculate_cell_voltage();
-    for (uint8_t i = 0; i < LTC6811_DeviceNUM; i++)
+    for (uint8_t i = 0; i < LTC6811_DEVICE_NUM; i++)
     {
         for (uint8_t j = 0; j < 12; j++)
         {
@@ -506,7 +506,7 @@ uint8_t misaka_ltc6811_auxiliary_voltage_self_test(uint16_t md, uint8_t st, uint
     status += misaka_ltc6811_axst(md, st);
     misaka_ltc6811_delay_ms(misaka_ltc6811_delay_unit);
     status += misaka_ltc6811_calculate_auxiliary_voltage();
-    for (uint8_t i = 0; i < LTC6811_DeviceNUM; i++)
+    for (uint8_t i = 0; i < LTC6811_DEVICE_NUM; i++)
     {
         for (uint8_t j = 0; j < 5; j++)
         {
@@ -536,7 +536,7 @@ uint8_t misaka_ltc6811_status_voltage_self_test(uint16_t md, uint8_t st, uint16_
     status += misaka_ltc6811_statst(md, st);
     misaka_ltc6811_delay_ms(misaka_ltc6811_delay_unit);
     status += misaka_ltc6811_calculate_status();
-    for (uint8_t i = 0; i < LTC6811_DeviceNUM; i++)
+    for (uint8_t i = 0; i < LTC6811_DEVICE_NUM; i++)
     {
         if (misaka_ltc6811_device_object[i].soc_volt != stc)
         {
@@ -574,7 +574,7 @@ uint8_t misaka_ltc6811_status_self_test(uint16_t md, uint8_t st, uint16_t stc)
     status += misaka_ltc6811_diagn();
     misaka_ltc6811_delay_ms(misaka_ltc6811_delay_unit);
     status += misaka_ltc6811_calculate_status();
-    for (uint8_t i = 0; i < LTC6811_DeviceNUM; i++)
+    for (uint8_t i = 0; i < LTC6811_DEVICE_NUM; i++)
     {
         if (misaka_ltc6811_device_object[i].soc_volt != stc)
         {
@@ -633,7 +633,7 @@ uint8_t misaka_ltc6811_open_wire_check(uint16_t md, uint8_t dcp, uint8_t ch)
     status += misaka_ltc6811_rdcvc();
     status += misaka_ltc6811_rdcvd();
 
-    for (uint8_t i = 0; i < LTC6811_DeviceNUM; i++)
+    for (uint8_t i = 0; i < LTC6811_DEVICE_NUM; i++)
     {
         misaka_ltc6811_device_object[i].open_wires = 0;
         if ((misaka_ltc6811_device_object[i].cell_volt[0] == 0))
@@ -711,7 +711,7 @@ uint8_t misaka_ltc6811_open_wire_check(uint16_t md, uint8_t dcp, uint8_t ch)
  */
 static uint8_t misaka_ltc6811_balance_group_Disable()
 {
-    for (uint8_t i = 0; i < LTC6811_DeviceNUM; i++)
+    for (uint8_t i = 0; i < LTC6811_DEVICE_NUM; i++)
     {
         misaka_ltc6811_device_object[i].cfgr[4] = 0x00FF & 0x0000;
         misaka_ltc6811_device_object[i].cfgr[5] &= 0xF0;
@@ -725,7 +725,7 @@ static uint8_t misaka_ltc6811_balance_group_Disable()
  */
 static uint8_t misaka_ltc6811_balance_group_Odd()
 {
-    for (uint8_t i = 0; i < LTC6811_DeviceNUM; i++)
+    for (uint8_t i = 0; i < LTC6811_DEVICE_NUM; i++)
     {
         misaka_ltc6811_device_object[i].cfgr[4] = 0x00FF & 0x0555;
         misaka_ltc6811_device_object[i].cfgr[5] &= 0xF0;
@@ -739,7 +739,7 @@ static uint8_t misaka_ltc6811_balance_group_Odd()
  */
 static uint8_t misaka_ltc6811_balance_group_Even()
 {
-    for (uint8_t i = 0; i < LTC6811_DeviceNUM; i++)
+    for (uint8_t i = 0; i < LTC6811_DEVICE_NUM; i++)
     {
 
         misaka_ltc6811_device_object[i].cfgr[4] = 0x00FF & 0x0AAA;
@@ -778,7 +778,7 @@ uint8_t misaka_ltc6811_balance_group(uint8_t group)
  */
 void misaka_ltc6811_dcc_flag(uint8_t balance_threshold)
 {
-    for (uint8_t i = 0; i < LTC6811_DeviceNUM; i++)
+    for (uint8_t i = 0; i < LTC6811_DEVICE_NUM; i++)
     {
         misaka_ltc6811_device_object[i].dcc_flag = 0x0000;    //清零
         for (uint8_t j = 0; j < 12; j++)
@@ -800,7 +800,7 @@ void misaka_ltc6811_dcc_flag(uint8_t balance_threshold)
  */
 void misaka_ltc6811_max_cell_voltage()
 {
-    for (uint8_t i = 0; i < LTC6811_DeviceNUM; i++)
+    for (uint8_t i = 0; i < LTC6811_DEVICE_NUM; i++)
     {
         misaka_ltc6811_device_object[i].cell_volt_max = misaka_ltc6811_device_object[i].cell_volt[0];
         for (uint8_t j = 0; j < 12; j++)
@@ -820,7 +820,7 @@ void misaka_ltc6811_max_cell_voltage()
  */
 void misaka_ltc6811_min_cell_voltage()
 {
-    for (uint8_t i = 0; i < LTC6811_DeviceNUM; i++)
+    for (uint8_t i = 0; i < LTC6811_DEVICE_NUM; i++)
     {
         misaka_ltc6811_device_object[i].cell_volt_min = misaka_ltc6811_device_object[i].cell_volt[0];
         for (uint8_t j = 0; j < 12; j++)
@@ -842,7 +842,7 @@ void misaka_ltc6811_max_min_cell_voltage()
 {
     misaka_ltc6811_max_cell_voltage();
     misaka_ltc6811_min_cell_voltage();
-    for (uint8_t i = 0; i < LTC6811_DeviceNUM; i++)
+    for (uint8_t i = 0; i < LTC6811_DEVICE_NUM; i++)
     {
         misaka_ltc6811_device_object[i].cell_volt_delta =
             misaka_ltc6811_device_object[i].cell_volt_max - misaka_ltc6811_device_object[i].cell_volt_min;
