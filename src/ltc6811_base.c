@@ -1,5 +1,5 @@
 /**
- * @file misaka_ltc6811_Base.c
+ * @file ltc6811_base.c
  * @brief
  * @author xqyjlj (xqyjlj@126.com)
  * @version 0.0
@@ -51,8 +51,8 @@ static uint16_t pec_table[256] = {0x0000, 0xC599, 0xCEAB, 0x0B32, 0xD8CF, 0x1D56
                                   0x5368, 0x96F1, 0x9DC3, 0x585A, 0x8BA7, 0x4E3E, 0x450C, 0x8095
                                  };
 static uint8_t send_data[LTC6811_DeviceNUM * 8 + 4];                 //SPI发送数据寄存器
-static uint8_t recive_data[LTC6811_DeviceNUM * 8 + 4];                   //SPI接收数据寄存器
-static uint16_t pecdata;
+static uint8_t receive_data[LTC6811_DeviceNUM * 8 + 4];                   //SPI接收数据寄存器
+static uint16_t pec_data;
 
 misaka_ltc6811_struct misaka_ltc6811_device_object[LTC6811_DeviceNUM];                         //设备数据结构体
 
@@ -130,7 +130,7 @@ static uint8_t misaka_ltc6811_Send_cmd(uint16_t cmd)  //发送命令
     send_data[1] = _cmd.data[1];
     send_data[2] = _cmd.data[2];
     send_data[3] = _cmd.data[3];
-    return misaka_ltc6811_transmit_receive(send_data, recive_data, 4);
+    return misaka_ltc6811_transmit_receive(send_data, receive_data, 4);
 }
 /**
  * @brief
@@ -155,7 +155,7 @@ static uint8_t misaka_ltc6811_Read_cmd(uint16_t cmd)
             send_data[i * 8 + j + 4] = 0xFF;
         }
     }
-    return misaka_ltc6811_transmit_receive(send_data, recive_data, LTC6811_DeviceNUM * 8 + 4);
+    return misaka_ltc6811_transmit_receive(send_data, receive_data, LTC6811_DeviceNUM * 8 + 4);
 }
 /**
  * @brief
@@ -171,7 +171,7 @@ static uint8_t misaka_ltc6811_Write_cmd(uint16_t cmd)
     send_data[1] = _cmd.data[1];
     send_data[2] = _cmd.data[2];
     send_data[3] = _cmd.data[3];
-    return misaka_ltc6811_transmit_receive(send_data, recive_data, LTC6811_DeviceNUM * 8 + 4);
+    return misaka_ltc6811_transmit_receive(send_data, receive_data, LTC6811_DeviceNUM * 8 + 4);
 }
 /**
  * @brief
@@ -187,7 +187,7 @@ uint8_t misaka_ltc6811_cmd_wakeidle(void)
         send_data[i * 4 + 2] = 0xAA;
         send_data[i * 4 + 3] = 0xAA;
     }
-    return misaka_ltc6811_transmit_receive(send_data, recive_data, 4 * LTC6811_DeviceNUM);
+    return misaka_ltc6811_transmit_receive(send_data, receive_data, 4 * LTC6811_DeviceNUM);
 }
 /**
  * @brief
@@ -198,16 +198,16 @@ uint8_t misaka_ltc6811_cmd_wakeidle(void)
 static uint8_t misaka_ltc6811_Move_data(uint8_t P[], uint8_t DeviceNum)
 {
     uint8_t i[8];
-    i[0] = recive_data[4 + (LTC6811_DeviceNUM - 1 - DeviceNum) * 8];
-    i[1] = recive_data[5 + (LTC6811_DeviceNUM - 1 - DeviceNum) * 8];
-    i[2] = recive_data[6 + (LTC6811_DeviceNUM - 1 - DeviceNum) * 8];
-    i[3] = recive_data[7 + (LTC6811_DeviceNUM - 1 - DeviceNum) * 8];
-    i[4] = recive_data[8 + (LTC6811_DeviceNUM - 1 - DeviceNum) * 8];
-    i[5] = recive_data[9 + (LTC6811_DeviceNUM - 1 - DeviceNum) * 8];
-    pecdata = misaka_ltc6811_PEC15(i, 6);
-    i[6] = pecdata >> 8;
-    i[7] = pecdata & 0x00FF;
-    if ((i[6] == recive_data[10 + (LTC6811_DeviceNUM - 1 - DeviceNum) * 8]) && (i[7] == recive_data[11 + (LTC6811_DeviceNUM - 1 - DeviceNum) * 8]))
+    i[0] = receive_data[4 + (LTC6811_DeviceNUM - 1 - DeviceNum) * 8];
+    i[1] = receive_data[5 + (LTC6811_DeviceNUM - 1 - DeviceNum) * 8];
+    i[2] = receive_data[6 + (LTC6811_DeviceNUM - 1 - DeviceNum) * 8];
+    i[3] = receive_data[7 + (LTC6811_DeviceNUM - 1 - DeviceNum) * 8];
+    i[4] = receive_data[8 + (LTC6811_DeviceNUM - 1 - DeviceNum) * 8];
+    i[5] = receive_data[9 + (LTC6811_DeviceNUM - 1 - DeviceNum) * 8];
+    pec_data = misaka_ltc6811_PEC15(i, 6);
+    i[6] = pec_data >> 8;
+    i[7] = pec_data & 0x00FF;
+    if ((i[6] == receive_data[10 + (LTC6811_DeviceNUM - 1 - DeviceNum) * 8]) && (i[7] == receive_data[11 + (LTC6811_DeviceNUM - 1 - DeviceNum) * 8]))
     {
         P[0] = i[0];
         P[1] = i[1];
@@ -236,9 +236,9 @@ uint8_t misaka_ltc6811_cmd_wrcfga(void)
 {
     for (uint8_t i = 0; i < LTC6811_DeviceNUM; i++)
     {
-        pecdata = misaka_ltc6811_PEC15(misaka_ltc6811_device_object[i].cfgr, 6);
-        misaka_ltc6811_device_object[i].cfgr[6] = pecdata >> 8;
-        misaka_ltc6811_device_object[i].cfgr[7] = pecdata & 0x00FF;
+        pec_data = misaka_ltc6811_PEC15(misaka_ltc6811_device_object[i].cfgr, 6);
+        misaka_ltc6811_device_object[i].cfgr[6] = pec_data >> 8;
+        misaka_ltc6811_device_object[i].cfgr[7] = pec_data & 0x00FF;
     }
     for (uint8_t i = 0; i < LTC6811_DeviceNUM; i++)
     {

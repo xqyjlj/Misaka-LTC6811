@@ -1,5 +1,5 @@
 /**
- * @file misaka_ltc6811.h
+ * @file ltc6811.h
  * @brief
  * @author xqyjlj (xqyjlj@126.com)
  * @version 0.0
@@ -14,8 +14,8 @@
  * </table>
  * *********************************************************************************
  */
-#ifndef __misaka_ltc6811_H__
-#define __misaka_ltc6811_H__
+#ifndef __MISAKA_LTC6811_H__
+#define __MISAKA_LTC6811_H__
 
 #include "ltc6811_base.h"
 

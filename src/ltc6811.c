@@ -1,5 +1,5 @@
 /**
- * @file misaka_ltc6811.c
+ * @file ltc6811.c
  * @brief
  * @author xqyjlj (xqyjlj@126.com)
  * @version 0.0
