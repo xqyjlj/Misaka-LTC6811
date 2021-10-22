@@ -390,7 +390,7 @@ uint8_t misaka_ltc6811_read_all_cell_voltage(uint16_t md, uint8_t dcp, uint8_t c
 {
     uint8_t status = 0;
     status += misaka_ltc6811_adcv(md, dcp, ch);
-    misaka_ltc6811_Delay_Ms(misaka_ltc6811_delay_unit);
+    misaka_ltc6811_delay_ms(misaka_ltc6811_delay_unit);
     status += misaka_ltc6811_calculate_cell_voltage();
     return status;
 }
@@ -424,7 +424,7 @@ uint8_t misaka_ltc6811_read_all_auxiliary_voltage(uint16_t md, uint8_t chg)
 {
     uint8_t status = 0;
     status += misaka_ltc6811_adax(md, chg);
-    misaka_ltc6811_Delay_Ms(misaka_ltc6811_delay_unit);
+    misaka_ltc6811_delay_ms(misaka_ltc6811_delay_unit);
     status += misaka_ltc6811_calculate_auxiliary_voltage();
     return status;
 }
@@ -462,7 +462,7 @@ uint8_t misaka_ltc6811_read_all_status(uint16_t md, uint8_t chst)
 {
     uint8_t status = 0;
     status += misaka_ltc6811_adstat(md, chst);
-    misaka_ltc6811_Delay_Ms(misaka_ltc6811_delay_unit);
+    misaka_ltc6811_delay_ms(misaka_ltc6811_delay_unit);
     status += misaka_ltc6811_calculate_status();
     return status;
 }
@@ -478,7 +478,7 @@ uint8_t misaka_ltc6811_cell_voltage_self_test(uint16_t md, uint8_t st, uint16_t 
     uint8_t status = 0;
     status += misaka_ltc6811_clrcell();
     status += misaka_ltc6811_cvst(md, st);
-    misaka_ltc6811_Delay_Ms(misaka_ltc6811_delay_unit);
+    misaka_ltc6811_delay_ms(misaka_ltc6811_delay_unit);
     status += misaka_ltc6811_calculate_cell_voltage();
     for (uint8_t i = 0; i < LTC6811_DeviceNUM; i++)
     {
@@ -504,7 +504,7 @@ uint8_t misaka_ltc6811_auxiliary_voltage_self_test(uint16_t md, uint8_t st, uint
     uint8_t status = 0;
     status += misaka_ltc6811_clraux();
     status += misaka_ltc6811_axst(md, st);
-    misaka_ltc6811_Delay_Ms(misaka_ltc6811_delay_unit);
+    misaka_ltc6811_delay_ms(misaka_ltc6811_delay_unit);
     status += misaka_ltc6811_calculate_auxiliary_voltage();
     for (uint8_t i = 0; i < LTC6811_DeviceNUM; i++)
     {
@@ -534,7 +534,7 @@ uint8_t misaka_ltc6811_status_voltage_self_test(uint16_t md, uint8_t st, uint16_
     uint8_t status = 0;
     status += misaka_ltc6811_clrstat();
     status += misaka_ltc6811_statst(md, st);
-    misaka_ltc6811_Delay_Ms(misaka_ltc6811_delay_unit);
+    misaka_ltc6811_delay_ms(misaka_ltc6811_delay_unit);
     status += misaka_ltc6811_calculate_status();
     for (uint8_t i = 0; i < LTC6811_DeviceNUM; i++)
     {
@@ -570,9 +570,9 @@ uint8_t misaka_ltc6811_status_self_test(uint16_t md, uint8_t st, uint16_t stc)
     uint8_t status = 0;
     status += misaka_ltc6811_clrstat();
     status += misaka_ltc6811_statst(md, st);
-    misaka_ltc6811_Delay_Ms(misaka_ltc6811_delay_unit);
+    misaka_ltc6811_delay_ms(misaka_ltc6811_delay_unit);
     status += misaka_ltc6811_diagn();
-    misaka_ltc6811_Delay_Ms(misaka_ltc6811_delay_unit);
+    misaka_ltc6811_delay_ms(misaka_ltc6811_delay_unit);
     status += misaka_ltc6811_calculate_status();
     for (uint8_t i = 0; i < LTC6811_DeviceNUM; i++)
     {
@@ -612,20 +612,20 @@ uint8_t misaka_ltc6811_open_wire_check(uint16_t md, uint8_t dcp, uint8_t ch)
     status += misaka_ltc6811_clrcell();
     /*上拉电流源*/
     status += misaka_ltc6811_adow(md, LTC6811_PUP1, dcp, ch);
-    misaka_ltc6811_Delay_Ms(misaka_ltc6811_delay_unit);
+    misaka_ltc6811_delay_ms(misaka_ltc6811_delay_unit);
     status += misaka_ltc6811_adow(md, LTC6811_PUP1, dcp, ch);
-    misaka_ltc6811_Delay_Ms(misaka_ltc6811_delay_unit);
+    misaka_ltc6811_delay_ms(misaka_ltc6811_delay_unit);
     status += misaka_ltc6811_adow(md, LTC6811_PUP1, dcp, ch);
 
     status += misaka_ltc6811_calculate_cell_voltage();
 
     /*下拉电流源*/
-    misaka_ltc6811_Delay_Ms(misaka_ltc6811_delay_unit);
+    misaka_ltc6811_delay_ms(misaka_ltc6811_delay_unit);
     status += misaka_ltc6811_clrcell();
     status += misaka_ltc6811_adow(md, LTC6811_PUP0, dcp, ch);
-    misaka_ltc6811_Delay_Ms(misaka_ltc6811_delay_unit);
+    misaka_ltc6811_delay_ms(misaka_ltc6811_delay_unit);
     status += misaka_ltc6811_adow(md, LTC6811_PUP0, dcp, ch);
-    misaka_ltc6811_Delay_Ms(misaka_ltc6811_delay_unit);
+    misaka_ltc6811_delay_ms(misaka_ltc6811_delay_unit);
     status += misaka_ltc6811_adow(md, LTC6811_PUP0, dcp, ch);
 
     status += misaka_ltc6811_rdcva();

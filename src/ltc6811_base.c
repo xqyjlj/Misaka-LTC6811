@@ -130,7 +130,7 @@ static uint8_t misaka_ltc6811_Send_cmd(uint16_t cmd)  //发送命令
     send_data[1] = _cmd.data[1];
     send_data[2] = _cmd.data[2];
     send_data[3] = _cmd.data[3];
-    return misaka_ltc6811_Transmit_Receive(send_data, recive_data, 4);
+    return misaka_ltc6811_transmit_receive(send_data, recive_data, 4);
 }
 /**
  * @brief
@@ -155,7 +155,7 @@ static uint8_t misaka_ltc6811_Read_cmd(uint16_t cmd)
             send_data[i * 8 + j + 4] = 0xFF;
         }
     }
-    return misaka_ltc6811_Transmit_Receive(send_data, recive_data, LTC6811_DeviceNUM * 8 + 4);
+    return misaka_ltc6811_transmit_receive(send_data, recive_data, LTC6811_DeviceNUM * 8 + 4);
 }
 /**
  * @brief
@@ -171,7 +171,7 @@ static uint8_t misaka_ltc6811_Write_cmd(uint16_t cmd)
     send_data[1] = _cmd.data[1];
     send_data[2] = _cmd.data[2];
     send_data[3] = _cmd.data[3];
-    return misaka_ltc6811_Transmit_Receive(send_data, recive_data, LTC6811_DeviceNUM * 8 + 4);
+    return misaka_ltc6811_transmit_receive(send_data, recive_data, LTC6811_DeviceNUM * 8 + 4);
 }
 /**
  * @brief
@@ -187,7 +187,7 @@ uint8_t misaka_ltc6811_cmd_wakeidle(void)
         send_data[i * 4 + 2] = 0xAA;
         send_data[i * 4 + 3] = 0xAA;
     }
-    return misaka_ltc6811_Transmit_Receive(send_data, recive_data, 4 * LTC6811_DeviceNUM);
+    return misaka_ltc6811_transmit_receive(send_data, recive_data, 4 * LTC6811_DeviceNUM);
 }
 /**
  * @brief

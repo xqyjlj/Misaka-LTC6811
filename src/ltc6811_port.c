@@ -17,12 +17,12 @@
 
 #include "misaka_device/ltc6811_base.h"
 
-uint8_t misaka_ltc6811_Transmit_Receive(uint8_t* tx_data, uint8_t* rx_data, uint16_t size)
+uint8_t misaka_ltc6811_transmit_receive(uint8_t* tx_data, uint8_t* rx_data, uint16_t size)
 {
 
 }
 
-void misaka_ltc6811_Delay_Ms(uint16_t ms)
+void misaka_ltc6811_delay_ms(uint16_t ms)
 {
 
 }
